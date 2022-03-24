@@ -43,4 +43,13 @@ public class ServerServiceImpl implements ServerService {
             observer.notifyMe(message);
         }
     }
+
+    @Override
+    public void notifyObserversExceptMe(String message, Observer exceptObserver) {
+       for (Observer observer: observers) {
+            if (!observers.equals(exceptObserver)) {
+                observer.notifyMe(message);
+            }
+        }
+    }
 }
