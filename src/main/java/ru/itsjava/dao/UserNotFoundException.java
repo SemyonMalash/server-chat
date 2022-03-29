@@ -1,4 +1,4 @@
-package ru.itsjava.domain;
+package ru.itsjava.dao;
 
 public class UserNotFoundException extends RuntimeException {
 
