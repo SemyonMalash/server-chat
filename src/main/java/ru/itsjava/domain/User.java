@@ -1,9 +1,9 @@
 package ru.itsjava.domain;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-@Getter
+@Data
 @RequiredArgsConstructor
 public class User {
     private final String name;
