@@ -25,13 +25,47 @@ public class ClientRunnable implements Runnable, Observer {
                 new BufferedReader(new InputStreamReader(socket.getInputStream()));
         String messageFromClient;
 
-        if (authorization(bufferedReader)) {
-            serverService.addObserver(this);
-            while ((messageFromClient = bufferedReader.readLine()) != null) {
-                System.out.println(user.getName() + ":" + messageFromClient);
-                serverService.notifyObserversExceptMe(user.getName() + ":" + messageFromClient, this);
+//        if (authorization(bufferedReader)) {
+//            serverService.addObserver(this);
+//            while ((messageFromClient = bufferedReader.readLine()) != null) {
+//                System.out.println(user.getName() + ":" + messageFromClient);
+//                serverService.notifyObservers(user.getName() + ":" + messageFromClient);
+//            }
+//        }
+//    }
+
+        String input;
+        while ((input = bufferedReader.readLine()) != null) {
+            if (authorization(input)) {
+                serverService.addObserver(this);
+                while ((messageFromClient = bufferedReader.readLine()) != null) {
+                    System.out.println(user.getName() + ":" + messageFromClient);
+                    serverService.notifyObserversExceptMe(user.getName() + ":" + messageFromClient, this);
+                }
+            } else if (registration(input)) {
+                serverService.addObserver(this);
+                while ((messageFromClient = bufferedReader.readLine()) != null) {
+                    System.out.println(user.getName() + ":" + messageFromClient);
+                    serverService.notifyObserversExceptMe(user.getName() + ":" + messageFromClient, this);
+                }
             }
         }
+    }
+
+    public boolean registration(String registrationMessage) {
+        if (registrationMessage.startsWith("!registr!")) {
+            String login = registrationMessage.substring(9).split(":")[0];
+            String password = registrationMessage.substring(9).split(":")[1];
+
+            System.out.println(login);
+            System.out.println(password);
+            try {
+                user = userDao.findByNameAndPassword(login, password);
+            } catch (UserNotFoundException e) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @SneakyThrows
