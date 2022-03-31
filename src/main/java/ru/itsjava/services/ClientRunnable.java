@@ -3,6 +3,7 @@ package ru.itsjava.services;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import ru.itsjava.dao.UserDao;
+import ru.itsjava.dao.UserNotFoundException;
 import ru.itsjava.domain.User;
 
 import java.io.BufferedReader;
@@ -24,17 +25,8 @@ public class ClientRunnable implements Runnable, Observer {
         BufferedReader bufferedReader =
                 new BufferedReader(new InputStreamReader(socket.getInputStream()));
         String messageFromClient;
-
-//        if (authorization(bufferedReader)) {
-//            serverService.addObserver(this);
-//            while ((messageFromClient = bufferedReader.readLine()) != null) {
-//                System.out.println(user.getName() + ":" + messageFromClient);
-//                serverService.notifyObservers(user.getName() + ":" + messageFromClient);
-//            }
-//        }
-//    }
-
         String input;
+
         while ((input = bufferedReader.readLine()) != null) {
             if (authorization(input)) {
                 serverService.addObserver(this);
@@ -57,11 +49,10 @@ public class ClientRunnable implements Runnable, Observer {
             String login = registrationMessage.substring(9).split(":")[0];
             String password = registrationMessage.substring(9).split(":")[1];
 
-            System.out.println(login);
-            System.out.println(password);
             try {
                 user = userDao.findByNameAndPassword(login, password);
             } catch (UserNotFoundException e) {
+                user = userDao.addUser(login, password);
                 return true;
             }
         }
@@ -69,17 +60,14 @@ public class ClientRunnable implements Runnable, Observer {
     }
 
     @SneakyThrows
-    private boolean authorization(BufferedReader bufferedReader) {
-        String authorizationMessage;
-        while ((authorizationMessage = bufferedReader.readLine()) != null) {
-            //!autho!login:password
-            if (authorizationMessage.startsWith("!autho!")) {
-                String login = authorizationMessage.substring(7).split(":")[0];
-                String password = authorizationMessage.substring(7).split(":")[1];
+    private boolean authorization(String authorizationMessage) {
+        //!autho!login:password
+        if (authorizationMessage.startsWith("!autho!")) {
+            String login = authorizationMessage.substring(7).split(":")[0];
+            String password = authorizationMessage.substring(7).split(":")[1];
 
-                user = userDao.findByNameAndPassword(login, password);
-                return true;
-            }
+            user = userDao.findByNameAndPassword(login, password);
+            return true;
         }
         return false;
     }
