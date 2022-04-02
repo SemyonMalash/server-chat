@@ -20,7 +20,7 @@ public class ServerServiceImpl implements ServerService {
     public void start() {
         ServerSocket serverSocket = new ServerSocket(PORT);
 
-        System.out.println("Server is being started");
+        System.out.println("Server is started");
 
         while (true) {
             Socket socket = serverSocket.accept();
@@ -51,7 +51,7 @@ public class ServerServiceImpl implements ServerService {
     @Override
     public void notifyObserversExceptMe(String message, Observer exceptObserver) {
        for (Observer observer: observers) {
-            if (!observers.equals(exceptObserver)) {
+            if (!observer.equals(exceptObserver)) {
                 observer.notifyMe(message);
             }
         }
