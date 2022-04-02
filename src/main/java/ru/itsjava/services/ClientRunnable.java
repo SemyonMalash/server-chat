@@ -40,6 +40,11 @@ public class ClientRunnable implements Runnable, Observer {
                     System.out.println(user.getName() + ":" + messageFromClient);
                     serverService.notifyObserversExceptMe(user.getName() + ":" + messageFromClient, this);
                 }
+            } else if (reauthorization(input)) {
+                while ((messageFromClient = bufferedReader.readLine()) != null) {
+                    System.out.println(user.getName() + ":" + messageFromClient);
+                    serverService.notifyObserversExceptMe(user.getName() + ":" + messageFromClient, this);
+                }
             }
         }
     }
@@ -61,10 +66,20 @@ public class ClientRunnable implements Runnable, Observer {
 
     @SneakyThrows
     private boolean authorization(String authorizationMessage) {
-        //!autho!login:password
         if (authorizationMessage.startsWith("!autho!")) {
             String login = authorizationMessage.substring(7).split(":")[0];
             String password = authorizationMessage.substring(7).split(":")[1];
+
+            user = userDao.findByNameAndPassword(login, password);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean reauthorization(String reauthorizationMessage) {
+        if (reauthorizationMessage.startsWith("!reautho!")) {
+            String login = reauthorizationMessage.substring(9).split(":")[0];
+            String password = reauthorizationMessage.substring(9).split(":")[1];
 
             user = userDao.findByNameAndPassword(login, password);
             return true;
