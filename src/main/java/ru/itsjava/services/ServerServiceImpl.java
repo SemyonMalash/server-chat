@@ -1,6 +1,8 @@
 package ru.itsjava.services;
 
 import lombok.SneakyThrows;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import ru.itsjava.dao.UserDao;
 import ru.itsjava.dao.UserDaoImpl;
 import ru.itsjava.utils.Props;
@@ -14,13 +16,14 @@ public class ServerServiceImpl implements ServerService {
     public final static int PORT = 8081;
     public final List<Observer> observers = new ArrayList<>();
     private final UserDao userDao = new UserDaoImpl(new Props());
+    private static final Logger logger = LogManager.getLogger(ServerServiceImpl.class);
 
     @SneakyThrows
     @Override
     public void start() {
         ServerSocket serverSocket = new ServerSocket(PORT);
 
-        System.out.println("Server is started");
+        logger.info("Server is started");
 
         while (true) {
             Socket socket = serverSocket.accept();

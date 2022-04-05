@@ -2,6 +2,8 @@ package ru.itsjava.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import ru.itsjava.dao.UserDao;
 import ru.itsjava.dao.UserNotFoundException;
 import ru.itsjava.domain.User;
@@ -17,11 +19,12 @@ public class ClientRunnable implements Runnable, Observer {
     private final ServerService serverService;
     private User user;
     private final UserDao userDao;
+    private static final Logger logger = LogManager.getLogger(ClientRunnable.class);
 
     @SneakyThrows
     @Override
     public void run() {
-        System.out.println("Client is connected");
+        logger.info("Client is connected");
         BufferedReader bufferedReader =
                 new BufferedReader(new InputStreamReader(socket.getInputStream()));
         String messageFromClient;
