@@ -98,5 +98,6 @@ public class ClientRunnable implements Runnable, Observer {
     public void notifyMe(String message) {
         PrintWriter clientWriter = new PrintWriter(socket.getOutputStream());
         clientWriter.println(message);
+        clientWriter.flush();
     }
 }
