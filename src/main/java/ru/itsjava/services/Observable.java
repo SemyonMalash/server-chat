@@ -8,4 +8,6 @@ public interface Observable {
     void notifyObservers(String message);
 
     void notifyObserversExceptMe(String message, Observer exceptObserver);
+
+    void writeIntoFile(String message);
 }

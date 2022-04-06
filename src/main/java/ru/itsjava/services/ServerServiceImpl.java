@@ -7,6 +7,9 @@ import ru.itsjava.dao.UserDao;
 import ru.itsjava.dao.UserDaoImpl;
 import ru.itsjava.utils.Props;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -60,4 +63,17 @@ public class ServerServiceImpl implements ServerService {
             observer.notifyMe(message);
         }
     }
+
+    @SneakyThrows
+    @Override
+    public void writeIntoFile(String message) {
+        FileWriter fileWriter = new FileWriter("src/main/resources/file.txt", true);
+        try (BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+            bufferedWriter.write(message);
+            bufferedWriter.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
+

@@ -35,17 +35,20 @@ public class ClientRunnable implements Runnable, Observer {
                 serverService.addObserver(this);
                 while ((messageFromClient = bufferedReader.readLine()) != null) {
                     System.out.println(user.getName() + ":" + messageFromClient);
+                    serverService.writeIntoFile(user.getName() + ":" + messageFromClient);
                     serverService.notifyObserversExceptMe(user.getName() + ":" + messageFromClient, this);
                 }
             } else if (registration(input)) {
                 serverService.addObserver(this);
                 while ((messageFromClient = bufferedReader.readLine()) != null) {
                     System.out.println(user.getName() + ":" + messageFromClient);
+                    serverService.writeIntoFile(user.getName() + ":" + messageFromClient);
                     serverService.notifyObserversExceptMe(user.getName() + ":" + messageFromClient, this);
                 }
             } else if (reauthorization(input)) {
                 while ((messageFromClient = bufferedReader.readLine()) != null) {
                     System.out.println(user.getName() + ":" + messageFromClient);
+                    serverService.writeIntoFile(user.getName() + ":" + messageFromClient);
                     serverService.notifyObserversExceptMe(user.getName() + ":" + messageFromClient, this);
                 }
             }
@@ -95,6 +98,5 @@ public class ClientRunnable implements Runnable, Observer {
     public void notifyMe(String message) {
         PrintWriter clientWriter = new PrintWriter(socket.getOutputStream());
         clientWriter.println(message);
-        clientWriter.flush();
     }
 }
