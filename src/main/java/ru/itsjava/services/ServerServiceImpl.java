@@ -3,6 +3,8 @@ package ru.itsjava.services;
 import lombok.SneakyThrows;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import ru.itsjava.dao.MessageDao;
+import ru.itsjava.dao.MessageDaoImpl;
 import ru.itsjava.dao.UserDao;
 import ru.itsjava.dao.UserDaoImpl;
 import ru.itsjava.utils.Props;
@@ -19,6 +21,7 @@ public class ServerServiceImpl implements ServerService {
     public final static int PORT = 8081;
     public final List<Observer> observers = new ArrayList<>();
     private final UserDao userDao = new UserDaoImpl(new Props());
+    private final MessageDao messageDao = new MessageDaoImpl(new Props());
     private static final Logger logger = LogManager.getLogger(ServerServiceImpl.class);
 
     @SneakyThrows
@@ -31,7 +34,7 @@ public class ServerServiceImpl implements ServerService {
         while (true) {
             Socket socket = serverSocket.accept();
             if (socket != null) {
-                Thread thread = new Thread(new ClientRunnable(socket, this, userDao));
+                Thread thread = new Thread(new ClientRunnable(socket, this, userDao, messageDao));
                 thread.start();
             }
         }

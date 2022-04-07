@@ -2,6 +2,8 @@ package services;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
+import ru.itsjava.dao.MessageDao;
+import ru.itsjava.dao.MessageDaoImpl;
 import ru.itsjava.dao.UserDao;
 import ru.itsjava.dao.UserDaoImpl;
 import ru.itsjava.domain.User;
@@ -18,7 +20,8 @@ public class ClientRunnableTest {
     @Test
     public void registration() {
         UserDao userDao = new UserDaoImpl(new Props());
-        ClientRunnable clientRunnable = new ClientRunnable(new Socket(), new ServerServiceImpl(), userDao);
+        MessageDao messageDao = new MessageDaoImpl(new Props());
+        ClientRunnable clientRunnable = new ClientRunnable(new Socket(), new ServerServiceImpl(), userDao, messageDao);
         String registrationMessge = "!registr!UT:PT";
         User user = new User("UT", "PT");
 

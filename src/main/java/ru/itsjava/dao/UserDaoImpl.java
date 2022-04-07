@@ -15,7 +15,7 @@ public class UserDaoImpl implements UserDao {
         try (Connection connection = DriverManager.getConnection(
                 props.getValue("db.url"),
                 props.getValue("db.login"),
-                props.getValue("db.password"));
+                props.getValue("db.password"))
         ) {
             PreparedStatement preparedStatement = connection
                     .prepareStatement("select count(*) cnt from new_schema.users where name = ? and password = ?;");
@@ -55,7 +55,6 @@ public class UserDaoImpl implements UserDao {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-
         return new User(name, password);
     }
 

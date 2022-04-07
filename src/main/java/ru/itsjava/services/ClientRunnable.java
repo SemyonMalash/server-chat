@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import ru.itsjava.dao.MessageDao;
 import ru.itsjava.dao.UserDao;
 import ru.itsjava.dao.UserNotFoundException;
 import ru.itsjava.domain.User;
@@ -19,6 +20,7 @@ public class ClientRunnable implements Runnable, Observer {
     private final ServerService serverService;
     private User user;
     private final UserDao userDao;
+    private final MessageDao messageDao;
     private static final Logger logger = LogManager.getLogger(ClientRunnable.class);
 
     @SneakyThrows
@@ -36,6 +38,7 @@ public class ClientRunnable implements Runnable, Observer {
                 while ((messageFromClient = bufferedReader.readLine()) != null) {
                     System.out.println(user.getName() + ":" + messageFromClient);
                     serverService.writeIntoFile(user.getName() + ":" + messageFromClient);
+                    messageDao.addMessage(user.getName(), messageFromClient);
                     serverService.notifyObserversExceptMe(user.getName() + ":" + messageFromClient, this);
                 }
             } else if (registration(input)) {
@@ -43,12 +46,14 @@ public class ClientRunnable implements Runnable, Observer {
                 while ((messageFromClient = bufferedReader.readLine()) != null) {
                     System.out.println(user.getName() + ":" + messageFromClient);
                     serverService.writeIntoFile(user.getName() + ":" + messageFromClient);
+                    messageDao.addMessage(user.getName(), messageFromClient);
                     serverService.notifyObserversExceptMe(user.getName() + ":" + messageFromClient, this);
                 }
             } else if (reauthorization(input)) {
                 while ((messageFromClient = bufferedReader.readLine()) != null) {
                     System.out.println(user.getName() + ":" + messageFromClient);
                     serverService.writeIntoFile(user.getName() + ":" + messageFromClient);
+                    messageDao.addMessage(user.getName(), messageFromClient);
                     serverService.notifyObserversExceptMe(user.getName() + ":" + messageFromClient, this);
                 }
             }
