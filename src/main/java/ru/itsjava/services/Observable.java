@@ -10,4 +10,6 @@ public interface Observable {
     void notifyObserversExceptMe(String message, Observer exceptObserver);
 
     void writeIntoFile(String message);
+
+    void showHistory(String message, Observer me);
 }

@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 
 @RequiredArgsConstructor
 public class ClientRunnable implements Runnable, Observer {
@@ -29,6 +30,7 @@ public class ClientRunnable implements Runnable, Observer {
         logger.info("Client is connected");
         BufferedReader bufferedReader =
                 new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        ArrayList history = new ArrayList();
         String messageFromClient;
         String input;
 
@@ -39,6 +41,10 @@ public class ClientRunnable implements Runnable, Observer {
                     System.out.println(user.getName() + ":" + messageFromClient);
                     serverService.writeIntoFile(user.getName() + ":" + messageFromClient);
                     messageDao.addMessage(user.getName(), messageFromClient);
+                    if (messageFromClient.equals("history")) {
+                        serverService.showHistory(messageDao.getHistory(history), this);
+                        continue;
+                    }
                     serverService.notifyObserversExceptMe(user.getName() + ":" + messageFromClient, this);
                 }
             } else if (registration(input)) {
@@ -47,6 +53,10 @@ public class ClientRunnable implements Runnable, Observer {
                     System.out.println(user.getName() + ":" + messageFromClient);
                     serverService.writeIntoFile(user.getName() + ":" + messageFromClient);
                     messageDao.addMessage(user.getName(), messageFromClient);
+                    if (messageFromClient.equals("history")) {
+                        serverService.showHistory(messageDao.getHistory(history), this);
+                        continue;
+                    }
                     serverService.notifyObserversExceptMe(user.getName() + ":" + messageFromClient, this);
                 }
             } else if (reauthorization(input)) {
@@ -54,6 +64,10 @@ public class ClientRunnable implements Runnable, Observer {
                     System.out.println(user.getName() + ":" + messageFromClient);
                     serverService.writeIntoFile(user.getName() + ":" + messageFromClient);
                     messageDao.addMessage(user.getName(), messageFromClient);
+                    if (messageFromClient.equals("history")) {
+                        serverService.showHistory(messageDao.getHistory(history), this);
+                        continue;
+                    }
                     serverService.notifyObserversExceptMe(user.getName() + ":" + messageFromClient, this);
                 }
             }
@@ -101,8 +115,7 @@ public class ClientRunnable implements Runnable, Observer {
     @SneakyThrows
     @Override
     public void notifyMe(String message) {
-        PrintWriter clientWriter = new PrintWriter(socket.getOutputStream());
+        PrintWriter clientWriter = new PrintWriter(socket.getOutputStream(), true);
         clientWriter.println(message);
-        clientWriter.flush();
     }
 }

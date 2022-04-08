@@ -4,10 +4,8 @@ import lombok.AllArgsConstructor;
 import ru.itsjava.domain.Message;
 import ru.itsjava.utils.Props;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 
 @AllArgsConstructor
 public class MessageDaoImpl implements MessageDao {
@@ -31,5 +29,22 @@ public class MessageDaoImpl implements MessageDao {
             e.printStackTrace();
         }
         return new Message(from, text);
+    }
+
+    public String getHistory(ArrayList arrayList) {
+        try (Connection connection = DriverManager.getConnection(
+                props.getValue("db.url"),
+                props.getValue("db.login"),
+                props.getValue("db.password"))
+        ) {
+            PreparedStatement statement = connection.prepareStatement("SELECT `from`, `text` FROM (SELECT * FROM messages ORDER BY id DESC LIMIT 10) messages ORDER BY id;");
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                arrayList.add(resultSet.getString(1) + ":" + resultSet.getString(2));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return arrayList.toString();
     }
 }

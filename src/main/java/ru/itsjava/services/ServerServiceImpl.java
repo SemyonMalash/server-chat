@@ -78,5 +78,15 @@ public class ServerServiceImpl implements ServerService {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void showHistory(String message, Observer me) {
+        for (Observer observer : observers) {
+            if (observer.equals(me)) {
+                observer.notifyMe(message);
+                break;
+            }
+        }
+    }
 }
 
